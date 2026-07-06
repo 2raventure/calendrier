@@ -50,11 +50,12 @@
   .month-label { font-size: 13px; font-weight: 600; color: var(--c2); letter-spacing: 0.04em; border-left: 3px solid var(--c1); padding-left: 8px; margin-bottom: 8px; }
   .month-label.past-month { border-left-color: #bbb; color: #888; }
 
-  .event-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: border-color 0.15s; }
+  .event-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; display: flex; gap: 12px; align-items: flex-start; }
   .event-card:hover { border-color: var(--c1); }
   .event-card.past { background: #f7f5f2; opacity: 0.72; }
   .event-card.past:hover { border-color: #aaa; opacity: 0.95; }
   .event-card.today-card { border-color: var(--c1); border-width: 2px; }
+  .event-card.highlight { border-color: var(--c1); border-width: 2px; background: rgba(62,205,197,0.04); }
 
   .event-date-col { min-width: 44px; text-align: center; }
   .event-day { font-size: 20px; font-weight: 600; color: var(--c2); line-height: 1; }
@@ -66,6 +67,8 @@
   .event-body { flex: 1; min-width: 0; }
   .event-title { font-size: 13px; font-weight: 600; color: var(--c2); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .event-card.past .event-title { color: #888; }
+  .event-subtitle { font-size: 11px; color: var(--c1); margin-bottom: 3px; font-style: italic; }
+  .event-time { font-size: 11px; color: var(--text); opacity: 0.7; margin-bottom: 3px; }
   .event-lieu { font-size: 11px; color: var(--text); opacity: 0.65; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .event-tags { display: flex; flex-wrap: wrap; gap: 4px; }
   .etag { font-size: 10px; padding: 2px 8px; border-radius: 12px; background: var(--tag-bg); color: var(--tag-text); }
@@ -73,11 +76,13 @@
   .event-card.past .etag { background: rgba(0,0,0,0.06); color: #888; }
   .past-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: rgba(0,0,0,0.07); color: #888; display: inline-flex; align-items: center; gap: 3px; }
 
-  .event-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .event-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
   .btn-agenda { font-family: 'ASAP', sans-serif; font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--c1); background: transparent; color: var(--c1); cursor: pointer; white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; gap: 4px; }
   .btn-agenda:hover { background: var(--c1); color: #fff; }
   .btn-link { font-family: 'ASAP', sans-serif; font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 4px; }
   .btn-link:hover { border-color: var(--c2); color: var(--c2); }
+  .btn-inscrip { font-family: 'ASAP', sans-serif; font-size: 11px; padding: 4px 10px; border-radius: 6px; border: none; background: var(--c2); color: #fff; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .btn-inscrip:hover { opacity: 0.85; }
 
   .empty { text-align: center; padding: 2rem; color: var(--text); opacity: 0.45; font-size: 13px; }
   .count-bar { font-size: 11px; color: var(--text); opacity: 0.6; margin-bottom: 0.75rem; }
@@ -86,7 +91,8 @@
   .modal-overlay.open { display: flex; }
   .modal { background: var(--card-bg); border-radius: 14px; padding: 1.5rem; max-width: 420px; width: 90%; }
   .modal h3 { font-size: 15px; font-weight: 600; color: var(--c2); margin-bottom: 4px; }
-  .modal-date { font-size: 12px; color: var(--c1); font-weight: 600; margin-bottom: 8px; }
+  .modal-date { font-size: 12px; color: var(--c1); font-weight: 600; margin-bottom: 4px; }
+  .modal-time { font-size: 12px; color: var(--text); opacity: 0.7; margin-bottom: 4px; }
   .modal-lieu { font-size: 12px; color: var(--text); opacity: 0.7; margin-bottom: 12px; }
   .modal-desc { font-size: 12px; color: var(--text); line-height: 1.6; margin-bottom: 14px; }
   .modal-btns { display: flex; flex-direction: column; gap: 8px; }
@@ -94,18 +100,19 @@
   .modal-btn.gcal { background: #4285F4; color: #fff; }
   .modal-btn.ical { background: var(--c2); color: #fff; }
   .modal-btn.outlook { background: #0078D4; color: #fff; }
+  .modal-btn.inscrip { background: var(--c1); color: #fff; }
   .modal-btn.close-btn { background: transparent; border: 1px solid var(--border); color: var(--text); }
   .modal-btn:hover { opacity: 0.88; }
 </style>
 
 <div class="wrap">
-  <h2 class="sr-only">Calendrier interactif des événements vélo 2R Aventure · le Concentré Vélo · Vélotafons </h2>
+  <h2 class="sr-only">Calendrier interactif des événements vélo 2R Aventure</h2>
 
   <div class="header">
     <div class="logo-dot"><i class="ti ti-bike" aria-hidden="true"></i></div>
     <div class="title-block">
       <h1>Agenda vélo 2026</h1>
-      <p>2R Aventure · le Concentré Vélo · Vélotafons · Hauts-de-France & au-delà</p>
+      <p>2R Aventure · Hauts-de-France & au-delà</p>
     </div>
   </div>
 
@@ -132,7 +139,7 @@
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal" id="modalBox">
+  <div class="modal">
     <div id="modalContent"></div>
     <div class="modal-btns" id="modalBtns"></div>
   </div>
@@ -140,25 +147,26 @@
 
 <script>
 const EVENTS_RAW = [
+  {t:"7èmes Rencontres Régionales du Vélo",d:"2026-09-17",de:null,heure:"9h – 16h",lieu:"Parc Saint Paul, 47 Rue de l'Avelon, 60650 Saint-Paul",tags:["Pros","Tourisme","Table ronde"],url:"https://invitations-hdf.hautsdefrance.fr/Inscription-aux-7emes-Rencontres-Regionales-du-Velo-719.html?k=4b6744bd3355f2145b7eb6a719416c54&t=1780560402&utm_source=Sarbacane&utm_medium=email&utm_campaign=7es%20Rencontres%20R%C3%A9gionales%20du%20V%C3%A9lo",inscription:"https://invitations-hdf.hautsdefrance.fr/Inscription-aux-7emes-Rencontres-Regionales-du-Velo-719.html?k=4b6744bd3355f2145b7eb6a719416c54&t=1780560402&utm_source=Sarbacane&utm_medium=email&utm_campaign=7es%20Rencontres%20R%C3%A9gionales%20du%20V%C3%A9lo",subtitle:"Mettre en tourisme un itinéraire cyclable",highlight:true},
   {t:"Mai à vélo",d:"2026-05-01",de:"2026-05-31",lieu:"France",tags:["Balade à vélo","Tous à biclou","Velotaf","défi"],url:"https://maiavelo.fr/"},
   {t:"Tour de France",d:"2026-07-04",de:"2026-07-26",lieu:"Barcelone, Catalogne, Espagne",tags:["Course","Evenements internationaux","Particuliers"],url:"https://www.letour.fr/fr"},
   {t:"Paris Roubaix",d:"2026-04-12",de:null,lieu:"Vélodrome Couvert Régional Jean Stablinski",tags:["Course","Evenements internationaux","Tourisme"],url:"https://www.paris-roubaix.fr/fr/"},
   {t:"Salon du Tourisme à Vélo en Hauts-de-France",d:"2026-05-29",de:"2026-05-31",lieu:"Vélodrome Couvert Régional Jean Stablinski",tags:["Particuliers","Pros","Tourisme","salon"],url:"https://www.stabvelodromeroubaix.fr/le-salon-du-tourisme-a-velo/"},
   {t:"Tous à biclou - STAB",d:"2026-03-10",de:null,lieu:"Vélodrome Couvert Régional Jean Stablinski",tags:["Pros","Table ronde","Tous à biclou"],url:null},
   {t:"Table Ronde - Réseau Alliances - Mobilité Employeur",d:"2026-01-23",de:null,lieu:"Brasserie et Bar Moulins d'Ascq",tags:["Table ronde","Tous à biclou","Velotaf"],url:"https://www.declic-mobilites.org/rdv-mobilite/32-reseau-alliances/923-table-ronde-interactive-mobilite-employeur-repenser-vos-deplacements-pour-un-impact-climat-maitrise"},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-02-03",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-03-03",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-04-07",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-05-05",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-06-02",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-07-07",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-09-02",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-10-06",de:null,lieu:"170 Allée de Liège, 59800 lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-11-03",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
-  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-12-01",de:null,lieu:"170 Allée de Liège, 59800 Lille, France",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-02-03",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-03-03",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-04-07",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-05-05",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-06-02",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-07-07",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-09-02",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-10-06",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-11-03",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
+  {t:"Broc à vélo - Maison des Mobilités Durables",d:"2026-12-01",de:null,lieu:"170 Allée de Liège, 59800 Lille",tags:["Velotaf","broc à vélo"],url:null},
   {t:"Ch'ti bike tour",d:"2026-08-29",de:"2026-08-30",lieu:"Métropole Européenne de Lille (MEL)",tags:["Balade à vélo","Particuliers"],url:"https://www.lechtibiketour.org/"},
   {t:"Lille Hardelot",d:"2026-06-07",de:null,lieu:null,tags:["Course","Particuliers"],url:"https://lille-hardelot.com/"},
-  {t:"Rencontres du Réseau vélo et marche",d:"2026-09-30",de:"2026-10-02",lieu:"Nancy, Grand Est, France",tags:["Pros","Table ronde"],url:"https://www.education.gouv.fr/semaine-europeenne-du-developpement-durable-9416"},
+  {t:"Rencontres du Réseau vélo et marche",d:"2026-09-30",de:"2026-10-02",lieu:"Nancy, Grand Est",tags:["Pros","Table ronde"],url:"https://www.education.gouv.fr/semaine-europeenne-du-developpement-durable-9416"},
   {t:"Journée mondiale du vélo",d:"2026-06-03",de:null,lieu:null,tags:["Evenements internationaux"],url:null},
   {t:"Semaine Européenne du Développement Durable",d:"2026-09-18",de:"2026-10-08",lieu:null,tags:["Evenements internationaux","Particuliers"],url:null},
   {t:"Parking Day",d:"2026-10-03",de:"2026-10-04",lieu:null,tags:["Particuliers"],url:"https://www.parkingday.fr/presentation"},
@@ -200,13 +208,9 @@ const EVENTS_RAW = [
 const MONTHS_FR = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 const MONTHS_SHORT = ["jan","fév","mars","avr","mai","juin","juil","août","sep","oct","nov","déc"];
 
-const TODAY = new Date();
-TODAY.setHours(0,0,0,0);
-const TODAY_STR = TODAY.toISOString().split('T')[0];
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 
-let activeTag = "all";
-let activeView = "upcoming";
-let searchVal = "";
+let activeTag = "all", activeView = "upcoming", searchVal = "";
 
 function isPast(ev) {
   const end = ev.de ? new Date(ev.de) : new Date(ev.d);
@@ -214,12 +218,10 @@ function isPast(ev) {
   return end < TODAY;
 }
 function isToday(ev) {
-  const start = new Date(ev.d);
-  const end = ev.de ? new Date(ev.de) : new Date(ev.d);
-  start.setHours(0,0,0,0); end.setHours(23,59,59,999);
-  return start <= TODAY && TODAY <= end;
+  const s = new Date(ev.d), e = ev.de ? new Date(ev.de) : new Date(ev.d);
+  s.setHours(0,0,0,0); e.setHours(23,59,59,999);
+  return s <= TODAY && TODAY <= e;
 }
-
 function setView(v) {
   activeView = v;
   document.querySelectorAll('.toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.view === v));
@@ -230,57 +232,29 @@ function setTag(t) {
   document.querySelectorAll('.tag-btn').forEach(b => b.classList.toggle('active', b.dataset.tag === t));
   updateAll();
 }
-
 function formatDateRange(d, de) {
-  const start = new Date(d);
-  if (!de) return { day: start.getDate(), mon: MONTHS_SHORT[start.getMonth()], range: null };
-  const end = new Date(de);
-  if (start.getMonth() === end.getMonth()) return { day: start.getDate(), mon: MONTHS_SHORT[start.getMonth()], range: `→ ${end.getDate()}` };
-  return { day: start.getDate(), mon: MONTHS_SHORT[start.getMonth()], range: `→ ${end.getDate()} ${MONTHS_SHORT[end.getMonth()]}` };
+  const s = new Date(d);
+  if (!de) return { day: s.getDate(), mon: MONTHS_SHORT[s.getMonth()], range: null };
+  const e = new Date(de);
+  if (s.getMonth() === e.getMonth()) return { day: s.getDate(), mon: MONTHS_SHORT[s.getMonth()], range: `→ ${e.getDate()}` };
+  return { day: s.getDate(), mon: MONTHS_SHORT[s.getMonth()], range: `→ ${e.getDate()} ${MONTHS_SHORT[e.getMonth()]}` };
 }
-
 function daysAgo(ev) {
-  const d = new Date(ev.de || ev.d);
-  d.setHours(0,0,0,0);
+  const d = new Date(ev.de || ev.d); d.setHours(0,0,0,0);
   const diff = Math.round((TODAY - d) / 86400000);
-  if (diff === 0) return "aujourd'hui";
-  if (diff === 1) return "hier";
-  return `il y a ${diff} j`;
+  if (diff === 0) return "aujourd'hui"; if (diff === 1) return "hier"; return `il y a ${diff} j`;
 }
-
 function groupByMonth(events) {
-  const groups = {};
-  events.forEach(e => {
-    const d = new Date(e.d);
-    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(e);
-  });
-  return groups;
-}
-
-function buildFilters() {
-  const row = document.getElementById('filtersRow');
-  const DISPLAY_TAGS = ["Pros","Particuliers","Velotaf","Course","Tourisme","salon","festival","défi","Table ronde","associations","Evenements internationaux","à confirmer"];
-  DISPLAY_TAGS.forEach(tag => {
-    const btn = document.createElement('button');
-    btn.className = 'tag-btn';
-    btn.dataset.tag = tag;
-    btn.textContent = tag;
-    btn.addEventListener('click', () => setTag(tag));
-    row.appendChild(btn);
-  });
+  const g = {};
+  events.forEach(e => { const d = new Date(e.d), k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; if (!g[k]) g[k]=[]; g[k].push(e); });
+  return g;
 }
 
 function renderCard(ev, container) {
   const {day, mon, range} = formatDateRange(ev.d, ev.de);
-  const past = isPast(ev);
-  const today = isToday(ev);
-  const aconf = ev.tags.includes('à confirmer');
+  const past = isPast(ev), today = isToday(ev), aconf = ev.tags.includes('à confirmer');
   const card = document.createElement('div');
-  card.className = 'event-card' + (past ? ' past' : '') + (today ? ' today-card' : '');
-
-  const evJSON = JSON.stringify(ev).replace(/"/g,'&quot;');
+  card.className = 'event-card' + (past?' past':'') + (today?' today-card':'') + (ev.highlight&&!past?' highlight':'');
 
   card.innerHTML = `
     <div class="event-date-col">
@@ -290,6 +264,8 @@ function renderCard(ev, container) {
     </div>
     <div class="event-body">
       <div class="event-title">${ev.t}</div>
+      ${ev.subtitle ? `<div class="event-subtitle"><i class="ti ti-quote" style="font-size:10px;vertical-align:-1px" aria-hidden="true"></i> ${ev.subtitle}</div>` : ''}
+      ${ev.heure ? `<div class="event-time"><i class="ti ti-clock" style="font-size:11px;vertical-align:-1px" aria-hidden="true"></i> ${ev.heure}</div>` : ''}
       ${ev.lieu ? `<div class="event-lieu"><i class="ti ti-map-pin" style="font-size:11px;vertical-align:-1px" aria-hidden="true"></i> ${ev.lieu}</div>` : ''}
       <div class="event-tags">
         ${ev.tags.filter(tg=>tg!=='à confirmer').slice(0,3).map(tg=>`<span class="etag">${tg}</span>`).join('')}
@@ -299,21 +275,18 @@ function renderCard(ev, container) {
       </div>
     </div>
     <div class="event-actions">
-      ${!past ? `<button class="btn-agenda" onclick="openModal(JSON.parse(this.dataset.ev)))" data-ev="${evJSON}"><i class="ti ti-calendar-plus" aria-hidden="true"></i>Agenda</button>` : ''}
-      ${ev.url ? `<button class="btn-link" onclick="openLink('${ev.url}')"><i class="ti ti-external-link" aria-hidden="true"></i>Lien</button>` : ''}
+      ${!past ? `<button class="btn-agenda" data-idx="${EVENTS_RAW.indexOf(ev)}"><i class="ti ti-calendar-plus" aria-hidden="true"></i>Agenda</button>` : ''}
+      ${ev.inscription ? `<button class="btn-inscrip" onclick="openLink('${ev.inscription}')"><i class="ti ti-user-plus" aria-hidden="true"></i>S'inscrire</button>` : (ev.url&&!ev.inscription ? `<button class="btn-link" onclick="openLink('${ev.url}')"><i class="ti ti-external-link" aria-hidden="true"></i>Lien</button>` : '')}
     </div>
   `;
-
-  if (!past) {
-    card.querySelector('.btn-agenda') && card.querySelector('.btn-agenda').addEventListener('click', () => openModal(ev));
-  }
+  const agendaBtn = card.querySelector('.btn-agenda');
+  if (agendaBtn) agendaBtn.addEventListener('click', () => openModal(ev));
   container.appendChild(card);
 }
 
 function updateAll() {
   const pastCount = EVENTS_RAW.filter(e => isPast(e)).length;
   document.getElementById('pastCount').textContent = pastCount;
-
   let filtered = EVENTS_RAW.filter(e => {
     const matchTag = activeTag === "all" || e.tags.includes(activeTag);
     const matchSearch = !searchVal || e.t.toLowerCase().includes(searchVal) || (e.lieu||"").toLowerCase().includes(searchVal);
@@ -323,120 +296,75 @@ function updateAll() {
     return true;
   });
   filtered.sort((a,b) => activeView === "past" ? b.d.localeCompare(a.d) : a.d.localeCompare(b.d));
-
   const container = document.getElementById('eventList');
   document.getElementById('countBar').textContent = `${filtered.length} événement${filtered.length!==1?'s':''} affiché${filtered.length!==1?'s':''}`;
   container.innerHTML = '';
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty"><i class="ti ti-calendar-off" style="font-size:28px;display:block;margin-bottom:6px"></i>Aucun événement trouvé</div>';
-    return;
-  }
+  if (!filtered.length) { container.innerHTML = '<div class="empty"><i class="ti ti-calendar-off" style="font-size:28px;display:block;margin-bottom:6px"></i>Aucun événement trouvé</div>'; return; }
 
   if (activeView === "all") {
-    const past = filtered.filter(e => isPast(e)).sort((a,b) => b.d.localeCompare(a.d));
-    const upcoming = filtered.filter(e => !isPast(e)).sort((a,b) => a.d.localeCompare(b.d));
-
-    if (past.length > 0) {
-      const pastGroups = groupByMonth(past);
-      Object.keys(pastGroups).sort().reverse().forEach(key => {
-        const [yr, mo] = key.split('-');
-        const section = document.createElement('div');
-        section.className = 'month-section';
-        section.innerHTML = `<div class="month-label past-month">${MONTHS_FR[parseInt(mo)-1]} ${yr}</div>`;
-        pastGroups[key].sort((a,b)=>b.d.localeCompare(a.d)).forEach(ev => renderCard(ev, section));
-        container.appendChild(section);
-      });
-    }
-
-    const divider = document.createElement('div');
-    divider.className = 'today-divider';
-    const d = TODAY;
-    divider.innerHTML = `<div class="today-line"></div><div class="today-pill"><i class="ti ti-calendar-event" aria-hidden="true"></i> Aujourd'hui · ${d.getDate()} ${MONTHS_FR[d.getMonth()]}</div><div class="today-line"></div>`;
-    container.appendChild(divider);
-
-    if (upcoming.length > 0) {
-      const upGroups = groupByMonth(upcoming);
-      Object.keys(upGroups).sort().forEach(key => {
-        const [yr, mo] = key.split('-');
-        const section = document.createElement('div');
-        section.className = 'month-section';
-        section.innerHTML = `<div class="month-label">${MONTHS_FR[parseInt(mo)-1]} ${yr}</div>`;
-        upGroups[key].forEach(ev => renderCard(ev, section));
-        container.appendChild(section);
-      });
-    }
+    const past = filtered.filter(e=>isPast(e)).sort((a,b)=>b.d.localeCompare(a.d));
+    const upcoming = filtered.filter(e=>!isPast(e)).sort((a,b)=>a.d.localeCompare(b.d));
+    if (past.length) { const g=groupByMonth(past); Object.keys(g).sort().reverse().forEach(k=>{ const [yr,mo]=k.split('-'); const s=document.createElement('div'); s.className='month-section'; s.innerHTML=`<div class="month-label past-month">${MONTHS_FR[parseInt(mo)-1]} ${yr}</div>`; g[k].sort((a,b)=>b.d.localeCompare(a.d)).forEach(ev=>renderCard(ev,s)); container.appendChild(s); }); }
+    const div=document.createElement('div'); div.className='today-divider'; div.innerHTML=`<div class="today-line"></div><div class="today-pill"><i class="ti ti-calendar-event" aria-hidden="true"></i> Aujourd'hui · ${TODAY.getDate()} ${MONTHS_FR[TODAY.getMonth()]}</div><div class="today-line"></div>`; container.appendChild(div);
+    if (upcoming.length) { const g=groupByMonth(upcoming); Object.keys(g).sort().forEach(k=>{ const [yr,mo]=k.split('-'); const s=document.createElement('div'); s.className='month-section'; s.innerHTML=`<div class="month-label">${MONTHS_FR[parseInt(mo)-1]} ${yr}</div>`; g[k].forEach(ev=>renderCard(ev,s)); container.appendChild(s); }); }
   } else {
-    const groups = groupByMonth(filtered);
-    const keys = Object.keys(groups).sort();
-    if (activeView === "past") keys.reverse();
-    keys.forEach(key => {
-      const [yr, mo] = key.split('-');
-      const section = document.createElement('div');
-      section.className = 'month-section';
-      const isPastMonth = activeView === "past";
-      section.innerHTML = `<div class="month-label${isPastMonth?' past-month':''}">${MONTHS_FR[parseInt(mo)-1]} ${yr}</div>`;
-      groups[key].forEach(ev => renderCard(ev, section));
-      container.appendChild(section);
-    });
+    const g=groupByMonth(filtered); const keys=Object.keys(g).sort(); if(activeView==="past") keys.reverse();
+    keys.forEach(k=>{ const [yr,mo]=k.split('-'); const s=document.createElement('div'); s.className='month-section'; s.innerHTML=`<div class="month-label${activeView==="past"?' past-month':''}">${MONTHS_FR[parseInt(mo)-1]} ${yr}</div>`; g[k].forEach(ev=>renderCard(ev,s)); container.appendChild(s); });
   }
 }
 
 function openModal(ev) {
-  const start = new Date(ev.d);
-  const end = ev.de ? new Date(ev.de) : null;
-  const fmtDate = d => `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
-  const dateStr = end ? `${fmtDate(start)} → ${fmtDate(end)}` : fmtDate(start);
+  const s=new Date(ev.d), e=ev.de?new Date(ev.de):null;
+  const fmt=d=>`${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
   document.getElementById('modalContent').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-      <div>
-        <h3>${ev.t}</h3>
-        <div class="modal-date"><i class="ti ti-calendar" aria-hidden="true"></i> ${dateStr}</div>
-        ${ev.lieu ? `<div class="modal-lieu"><i class="ti ti-map-pin" aria-hidden="true"></i> ${ev.lieu}</div>` : ''}
-      </div>
+    <div style="margin-bottom:10px">
+      <h3>${ev.t}</h3>
+      ${ev.subtitle?`<div style="font-size:12px;color:var(--c1);font-style:italic;margin:3px 0">${ev.subtitle}</div>`:''}
+      <div class="modal-date"><i class="ti ti-calendar" aria-hidden="true"></i> ${e?fmt(s)+' → '+fmt(e):fmt(s)}</div>
+      ${ev.heure?`<div class="modal-time"><i class="ti ti-clock" aria-hidden="true"></i> ${ev.heure}</div>`:''}
+      ${ev.lieu?`<div class="modal-lieu"><i class="ti ti-map-pin" aria-hidden="true"></i> ${ev.lieu}</div>`:''}
     </div>
-    <div class="modal-desc">Ajouter cet événement à votre agenda :</div>
+    <div class="modal-desc">Ajouter à votre agenda :</div>
   `;
-  const gcalUrl = buildGCal(ev);
-  const icalData = buildICal(ev);
-  const fname = ev.t.replace(/[^a-z0-9]/gi,'_') + '.ics';
+  const gcal = buildGCal(ev), ical = buildICal(ev), fname = ev.t.replace(/[^a-z0-9]/gi,'_')+'.ics';
   document.getElementById('modalBtns').innerHTML = `
-    <button class="modal-btn gcal" onclick="openLink('${gcalUrl}')"><i class="ti ti-brand-google" aria-hidden="true"></i>Google Calendar</button>
-    <button class="modal-btn ical" id="icalBtn"><i class="ti ti-calendar-down" aria-hidden="true"></i>Apple / iCal (.ics)</button>
-    <button class="modal-btn outlook" id="outlookBtn"><i class="ti ti-mail" aria-hidden="true"></i>Outlook (.ics)</button>
+    ${ev.inscription?`<button class="modal-btn inscrip" onclick="openLink('${ev.inscription}')"><i class="ti ti-user-plus" aria-hidden="true"></i>S'inscrire à l'événement</button>`:''}
+    <button class="modal-btn gcal" onclick="openLink('${gcal}')"><i class="ti ti-brand-google" aria-hidden="true"></i>Google Calendar</button>
+    <button class="modal-btn ical" id="mb-ical"><i class="ti ti-calendar-down" aria-hidden="true"></i>Apple / iCal (.ics)</button>
+    <button class="modal-btn outlook" id="mb-outlook"><i class="ti ti-mail" aria-hidden="true"></i>Outlook (.ics)</button>
     <button class="modal-btn close-btn" onclick="closeModal()">Annuler</button>
   `;
-  document.getElementById('icalBtn').onclick = () => downloadICal(icalData, fname);
-  document.getElementById('outlookBtn').onclick = () => downloadICal(icalData, fname);
+  document.getElementById('mb-ical').onclick = () => downloadICal(ical, fname);
+  document.getElementById('mb-outlook').onclick = () => downloadICal(ical, fname);
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 document.getElementById('modalOverlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
 function buildGCal(ev) {
-  const fmt = d => d.replace(/-/g,'');
-  const title = encodeURIComponent(ev.t);
-  const loc = encodeURIComponent(ev.lieu||'');
-  const end = ev.de ? fmt(ev.de) : fmt(ev.d);
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(ev.d)}/${end}&location=${loc}`;
+  const fmt=d=>d.replace(/-/g,'');
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.t)}&dates=${fmt(ev.d)}/${fmt(ev.de||ev.d)}&location=${encodeURIComponent(ev.lieu||'')}${ev.heure?'&details='+encodeURIComponent('Horaires : '+ev.heure+(ev.subtitle?'\nThème : '+ev.subtitle:'')):''}`;
 }
 function buildICal(ev) {
-  const fmt = d => d.replace(/-/g,'');
-  const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const fmt=d=>d.replace(/-/g,''), now=new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
   return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//2R Aventure//Calendrier Vélo//FR','BEGIN:VEVENT',
     `UID:${ev.t.replace(/\s/g,'')}-${ev.d}@2raventure`,`DTSTAMP:${now}`,
     `DTSTART;VALUE=DATE:${fmt(ev.d)}`,`DTEND;VALUE=DATE:${fmt(ev.de||ev.d)}`,
-    `SUMMARY:${ev.t}`,ev.lieu?`LOCATION:${ev.lieu}`:'',ev.url?`URL:${ev.url}`:'',
-    'END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
+    `SUMMARY:${ev.t}`,ev.lieu?`LOCATION:${ev.lieu}`:'',
+    (ev.subtitle||ev.heure)?`DESCRIPTION:${[ev.subtitle?'Thème : '+ev.subtitle:'',ev.heure?'Horaires : '+ev.heure:'',ev.url?'Inscription : '+ev.url:''].filter(Boolean).join('\\n')}`:'',
+    ev.url?`URL:${ev.url}`:'','END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
 }
 function downloadICal(data, filename) {
-  const blob = new Blob([data], {type:'text/calendar;charset=utf-8'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click();
-  closeModal();
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:'text/calendar;charset=utf-8'})); a.download=filename; a.click(); closeModal();
 }
 
-document.getElementById('searchInput').addEventListener('input', function(){ searchVal = this.value.toLowerCase().trim(); updateAll(); });
-
-buildFilters();
-updateAll();
+function buildFilters() {
+  const row=document.getElementById('filtersRow');
+  ["Pros","Particuliers","Velotaf","Course","Tourisme","salon","festival","défi","Table ronde","associations","Evenements internationaux","à confirmer"].forEach(tag=>{
+    const btn=document.createElement('button'); btn.className='tag-btn'; btn.dataset.tag=tag; btn.textContent=tag;
+    btn.addEventListener('click',()=>setTag(tag)); row.appendChild(btn);
+  });
+}
+document.getElementById('searchInput').addEventListener('input', function(){ searchVal=this.value.toLowerCase().trim(); updateAll(); });
+buildFilters(); updateAll();
 </script>
