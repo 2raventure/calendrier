@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avent mobilité employeur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: chaleureux, joueur, concret — un cadeau par jour pour les employeurs.
+   IDEA: un calendrier de l'Avent en carton, portes numérotées en désordre, comme un abri vélo un soir de décembre.
+   PICTURE: la grille de 24 portes elle-même, cadenassées jusqu'au jour J, qui s'ouvrent sur charnière.
+   COLOUR and TYPE: fond pétrole profond, portes crème et canneberge, accent moutarde pour les cases prêtes. Asap partout.
+   LAYOUT: titre modeste, grille dense à 6 colonnes (3 sur téléphone), panneau de révélation en surimpression. */
+:root{color-scheme:dark;--bg:#123a3d;--bg2:#0d2d2f;--ink:#f3efe7;--cream:#f3efe7;--cran:#b8323a;--cran2:#8f222a;--mus:#e9b13b;--dark:#1b2324;--mute:#a9c1bf}
+:root[data-theme=light]{color-scheme:dark}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Asap,system-ui,sans-serif;overflow-x:clip;
+background-image:radial-gradient(circle at 15% 10%,rgba(255,255,255,.06) 0 1.5px,transparent 2px),radial-gradient(circle at 70% 40%,rgba(255,255,255,.05) 0 1.5px,transparent 2px);background-size:90px 90px,130px 130px}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(20px,3.5vw,44px) max(4vw,16px) 56px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 28px;margin-bottom:22px}
+h1{font:800 clamp(30px,4.6vw,48px)/1.05 Asap,system-ui,sans-serif;margin:0;text-wrap:balance}
+.sub{margin:6px 0 0;color:var(--mute);max-width:60ch}
+.status{font-weight:600;background:var(--bg2);border-radius:999px;padding:8px 16px;white-space:nowrap}
+.status b{color:var(--mus)}
+.preview{display:none;background:var(--mus);color:var(--dark);font-weight:700;border-radius:10px;padding:8px 14px;margin-bottom:16px}
+.is-preview .preview{display:block}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:clamp(96px,12vw,140px);grid-auto-flow:dense;gap:clamp(8px,1.2vw,14px);perspective:1200px}
+.cell{position:relative;border-radius:12px;background:var(--bg2);box-shadow:inset 0 3px 10px rgba(0,0,0,.45)}
+.cell.w2{grid-column:span 2}.cell.h2{grid-row:span 2}
+.door{position:absolute;inset:0;width:100%;border:0;border-radius:12px;cursor:pointer;font:inherit;text-align:left;padding:10px 12px;
+transform-origin:left center;transition:transform .7s cubic-bezier(.3,.7,.2,1),box-shadow .2s;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+box-shadow:0 2px 0 rgba(0,0,0,.25),0 8px 18px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.35)}
+.door.c0{background:var(--cream);color:var(--cran)}
+.door.c1{background:var(--cran);color:var(--cream)}
+.door.c2{background:#2f6a66;color:var(--cream)}
+.door .n{font:800 clamp(34px,5vw,60px)/.9 Asap,system-ui,sans-serif}
+.cell.w2 .door .n,.cell.h2 .door .n{font-size:clamp(46px,7vw,84px)}
+.door .meta{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;opacity:.85}
+.door svg.wheel{position:absolute;right:-18%;bottom:-28%;width:70%;aspect-ratio:1;opacity:.13;pointer-events:none}
+.door .lock{width:16px;height:16px;flex:none}
+.door:focus-visible{outline:3px solid var(--mus);outline-offset:3px}
+.door.ready{box-shadow:0 0 0 3px var(--mus),0 8px 24px rgba(233,177,59,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.door.ready .meta{opacity:1}
+.door.locked{cursor:not-allowed}
+.door.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+.cell.opened .door{transform:rotateY(-108deg);box-shadow:none}
+.inside{position:absolute;inset:0;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;color:var(--cream);background:var(--bg2);visibility:hidden}
+.cell.opened .inside{visibility:visible}
+.inside .k{font-size:13px;color:var(--mus);font-weight:700}
+.inside .t{font-weight:700;font-size:15px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.inside button{all:unset;cursor:pointer;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;color:var(--mute)}
+.inside button:focus-visible{outline:2px solid var(--mus)}
+.overlay{position:fixed;inset:0;background:rgba(6,20,21,.72);display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.overlay.on{display:flex}
+.panel{background:var(--cream);color:var(--dark);border-radius:18px;max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:clamp(22px,4vw,34px);position:relative;animation:pop .45s cubic-bezier(.3,1.4,.5,1)}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+.panel .day{font:800 15px Asap,system-ui,sans-serif;color:var(--cran)}
+.panel .kind{display:inline-block;background:var(--cran);color:var(--cream);font-size:13px;font-weight:700;border-radius:999px;padding:3px 12px;margin-left:8px;vertical-align:2px}
+.panel h2{font:800 clamp(24px,3.4vw,32px)/1.08 Asap,system-ui,sans-serif;margin:12px 0 12px;text-wrap:balance}
+.panel p{margin:0 0 12px;font-size:17px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.links a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;background:var(--bg);color:var(--cream);font-weight:700;text-decoration:none}
+.links a:hover{background:var(--cran)}
+.links a:focus-visible,.close:focus-visible{outline:3px solid var(--mus);outline-offset:2px}
+.close{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;font-size:26px;cursor:pointer;color:var(--dark)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,30px);opacity:0;background:var(--mus);color:var(--dark);font-weight:700;padding:12px 20px;border-radius:12px;transition:.3s;z-index:20;max-width:92vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+footer{margin-top:26px;color:var(--mute);font-size:14px;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+footer button{all:unset;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+footer button:focus-visible{outline:2px solid var(--mus)}
+.vlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.vcard{background:var(--cream);color:var(--dark);border-radius:16px;padding:20px 22px}
+.vcard h2{font:800 22px/1.15 Asap,system-ui,sans-serif;margin:8px 0 10px;text-wrap:balance}
+.vcard p{margin:0 0 10px}
+.vcard .day{font-weight:800;color:var(--cran)}
+.vcard .kind{display:inline-block;background:var(--cran);color:var(--cream);font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;margin-left:8px}
+.vcard .links a{min-height:38px;font-size:14px}
+.vcard .url{display:block;font-size:13px;color:#5b6566;overflow-wrap:anywhere;margin-top:6px}
+.note{margin-top:14px;border-radius:10px;padding:10px 12px;font-size:15px}
+.note.ko{background:#fbe3a6}.note.okk{background:#d7e9e3}
+.note b{display:block;font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.legend span{border-radius:999px;padding:6px 14px;font-weight:600;color:var(--dark)}
+@media(max-width:760px){.vlist{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){table{font-size:13px}}
+@media(max-width:820px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(92px,20vw,130px)}}
+@media(max-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:96px}.cell.w2{grid-column:span 1}.cell.h2{grid-row:span 1}.cell.w2 .door .n,.cell.h2 .door .n{font-size:40px}.inside .t{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.door,.panel,.toast{transition:none;animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>L'Avent de la mobilité employeur</h1>
+      <p class="sub">Chaque jour de décembre, une case s'ouvre : une info, un outil ou un produit pour donner envie de venir travailler autrement. Proposé par 2R Aventure.</p>
+    </div>
+    <div class="status" id="status"></div>
+  </header>
+  <div class="preview">Mode aperçu : toutes les cases sont ouvrables. Retirez #apercu de l'adresse pour revenir au calendrier réel.</div>
+  <div class="grid" id="grid"></div>
+  <footer>
+    <span>Les cases ouvertes restent visibles dans votre navigateur.</span>
+    <button type="button" id="reset">Refermer toutes les cases</button>
+  </footer>
+</div>
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="pt">
+  <div class="panel">
+    <button class="close" id="cl" aria-label="Fermer">×</button>
+    <div><span class="day" id="pd"></span><span class="kind" id="pk"></span></div>
+    <h2 id="pt"></h2>
+    <div id="pb"></div>
+    <div class="links" id="pl"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+{
+const YEAR=2026;
+const VERIF=false;
+const SIM=null;
+const NOW=()=>SIM?SIM.getTime():Date.now();
+const D=[
+{d:1,k:"Outil",t:"Le kit mobilité employeur",b:["Pour bien démarrer le mois, une boîte à outils pratico-pratique pour sensibiliser tes salariés.","Pioche, adapte, diffuse : tout est prêt à l'emploi."],l:[["Ouvrir le kit","https://app.notion.com/p/Kit-mobilit-Employeur-des-outils-pratico-pratique-pour-sensibiliser-vos-salari-s-38b1d74b9822835eab7301dd00e820c8"]],ok:false,v:"Page Notion non consultée : texte écrit d'après son titre. « Tout est prêt à l'emploi » est une formule de ma part."},
+{d:2,k:"Produit",t:"Bien au chaud sur le vélo",b:["Gants, manchons, cache-cou : Suzon Suzette a toute une gamme d'accessoires anti-froid pour rouler en hiver… mais pas que.","Une jolie idée de cadeau d'équipe pour garder le plaisir du vélo jusqu'au printemps."],l:[["Les accessoires anti-froid","https://suzon-suzette.fr/accessoires-velo/anti-froid/"]],ok:false,v:"Lien mis à jour. Page non consultée : « gants, manchons, cache-cou » sont des exemples de ma part, à ajuster à leur gamme."},
+{d:3,k:"Outil",t:"Combien coûte vraiment un vélo pour aller travailler ?",b:["Aide à l'équipement, location longue durée avec services, conversion de salaire : plusieurs formats permettent de mettre tes équipes en selle.","Le calculateur de 2R Aventure estime le coût réel et le reste à charge. De quoi mettre des vélos sous le sapin… ou au moins à l'ordre du jour des négociations salariales."],l:[["Lancer le calcul","https://2raventure.com/2026/03/06/combien-coute-vraiment-un-velo-pour-aller-travailler/"]],ok:true,v:"Repris de ton article et de ta consigne."},
+{d:4,k:"Info",t:"La supernewsletter",b:["Envie de saouler tout le monde… de mobilité durable (pas de vin chaud) ? Abonne-toi à la newsletter de 2R Aventure.","Toutes les deux semaines (ou presque) : actus, bonnes pratiques, chiffres et études. Sans pub et sans engagement."],l:[["M'abonner","https://2raventure.com/newsletter/"]],ok:true,v:"Repris de la page newsletter."},
+{d:5,k:"Action",t:"Adhère à Tous à Biclou",b:["Le 5 décembre, c'est la Journée mondiale du bénévolat. L'occasion de soutenir l'association qui fait vivre le vélo au quotidien.","En adhérant, tu peux aussi compter sur des ambassadeurs formés, des ressources gratuites et un réseau de bonnes pratiques locales, faciles à appliquer chez toi."],l:[["Adhérer sur HelloAsso","https://www.helloasso.com/associations/tous-a-biclou"]],ok:true,v:"D'après ta consigne. Le lien avec la Journée du bénévolat est mon idée."},
+{d:6,k:"Produit",t:"Des chaussettes pour la Saint-Nicolas",b:["Dans le Nord, le 6 décembre se fête en famille. Glisse dans les souliers de tes équipes des chaussettes personnalisées, de vélo ou pas.","Elles sont tricotées à Roubaix par Sans Couture, à tes couleurs."],l:[["Personnaliser mes chaussettes","https://sans-couture.fr/194-personnalisation"]],ok:true,v:"D'après ta consigne. Le clin d'œil à la Saint-Nicolas est mon ajout."},
+{d:7,k:"Outil",t:"Un stationnement vélo, pas à pas",b:["Un parking vélo sûr et abrité, c'est souvent le premier déclencheur pour venir à vélo.","Ce guide t'accompagne étape par étape pour l'installer."],l:[["Suivre le pas à pas","https://wind-rhodium-dc5.notion.site/Installer-un-stationnement-v-lo-s-curis-0771d74b982283978bef81b347bf5669?pvs=73"]],ok:false,v:"Page Notion non consultée : texte volontairement général."},
+{d:8,k:"Produit",t:"Le vélo reconditionné, un choix malin",b:["Un vélo qui a déjà roulé, remis en état : plus abordable, plus sobre, tout aussi agréable.","Pour une flotte d'entreprise ou un cadeau aux salariés, voici quelques belles adresses."],l:[["Riese & Müller","https://www.r-m.de/fr/online-shop/bikes/"],["Recyclemoi","https://www.recyclemoi.org/"],["Rutile","https://rutile.bike/"],["Les Mains dans le guidon","https://lesmainsdansleguidon.fr/categorie-produit/velo-occasion/"],["Upway","https://upway.fr/collections/tous-nos-produits"]],ok:false,v:"Sites non consultés. Le lien Riese & Müller pointe vers leur boutique générale : vérifie qu'il mène bien à du reconditionné."},
+{d:9,k:"Info",t:"Le leasing social, pour ceux qui ne peuvent pas toujours pédaler",b:["Le vélo ne répond pas à tous les trajets. Le leasing social permet aux salariés aux revenus modestes, qui font plus de 10 km pour venir travailler, de rouler en voiture électrique neuve, sans apport et à moindre coût.","L'employeur ne porte aucun risque : son rôle est d'informer et d'orienter. Une belle pièce de plus dans ton plan de mobilité."],l:[["Lire le guide","https://2raventure.com/2026/08/17/leasing-social/"]],ok:true,v:"Repris de ton article et de ta consigne."},
+{d:10,k:"Cadeau",t:"Offre l'autoréparation",b:["Les Mains dans le guidon, c'est un atelier vélo lillois où l'on répare soi-même, avec l'aide d'un expert sur place.","Offre une adhésion annuelle à tes salariés, ou fais venir l'atelier directement sur ton site."],l:[["Découvrir l'atelier","https://lesmainsdansleguidon.fr/"]],ok:true,v:"Repris de leur site (3 ateliers à Lille, adhésion annuelle, interventions en entreprise)."},
+{d:11,k:"Produit",t:"Une sacoche upcyclée pour les petits",b:["La sacoche Caba-Roule de Cabaniste est fabriquée à partir de matériaux revalorisés.","Pour les parents de tes équipes qui emmènent leurs enfants à vélo, un cadeau utile et plein de sens."],l:[["Voir la sacoche","https://2raventure.com/produit/cabaniste-sacoche-de-velo-enfant-caba-roule/"]],ok:true,v:"D'après ta consigne. L'angle « parents » est mon ajout."},
+{d:12,k:"Info",t:"Deviens Employeur Pro-Vélo",b:["Le label Employeur Pro-Vélo valorise les structures qui s'engagent pour le vélo et guide vers les bonnes actions.","Un cadre clair, une reconnaissance visible, une dynamique d'équipe."],l:[["Découvrir le label","https://employeurprovelo.fr/"]],ok:false,v:"Site non consulté : description générale du label à valider."},
+{d:13,k:"Produit",t:"Du fluo, mais pas en gilet jaune",b:["Les jours sont au plus court. Offre à tes salariés une belle visibilité, avec style.","GoFluo, marque belge, propose des vêtements et accessoires réfléchissants colorés, personnalisables avec ton logo."],l:[["Découvrir GoFluo","https://gofluo.com/fr"]],ok:true,v:"Repris de leur site."},
+{d:14,k:"Action",t:"Une ceinture en chambre à air",b:["Organise un team building pour fabriquer tes propres ceintures à partir de chambres à air. Tissel, avec ses manufactures partagées à Loos et Roubaix, accueille séminaires et team buildings.","Et pour (re)valoriser les chambres à air de Vélib', soutiens la Ceinture universelle de La Vie est Belt, fabriquée à Roubaix."],l:[["Tissel","https://tissel.org/services/"],["La Ceinture universelle","https://fr.ulule.com/ceinture-universelle/"]],ok:false,v:"Team building et Vélib' fusionnés dans cette case pour tenir en 24 jours. Ni Tissel ni la page Ulule ne parlent de chambres à air : le lien avec Vélib' vient de ta consigne. Vérifie que l'atelier ceintures est faisable chez Tissel."},
+{d:15,k:"Outil",t:"Les acteurs du vélo en Hauts-de-France",b:["La filière vélo régionale est riche, de la fabrication à la réparation.","Cet annuaire t'aide à trouver un partenaire près de chez toi."],l:[["Explorer l'annuaire","https://2raventure.github.io/cluster-velo/annuaire_velo_hdf.html"]],ok:true,v:"D'après ta consigne."},
+{d:16,k:"Info",t:"Le forfait mobilités durables passe à 1 000 €",b:["Vélo, covoiturage, autopartage : tu peux prendre en charge une partie des trajets durables de tes salariés, exonérée de cotisations.","En 2026, le plafond passe à 1 000 € par an et par salarié. Le BOSS fait le point sur ce qui change."],l:[["Lire l'actualité du BOSS","https://boss.gouv.fr/portail/accueil/actualites-boss-et-rescrits/actualites-boss/2026/octobre/evolution-du-traitement-social-1.html"]],ok:true,v:"D'après ta consigne. Le relèvement à 1 000 € vaut pour les sommes versées jusqu'au 31 décembre 2026 : à préciser si le calendrier est relu en 2027."},
+{d:17,k:"Produit",t:"Du mérinos pour le cou et les oreilles",b:["Vera Cycling propose une gamme hiver en mérinos, fabriquée en France.","Chaleur, confort et belle allure pour tes collaborateurs."],l:[["Idées cadeaux","https://www.veracycling.fr/idees-cadeau-de-noel-pour-cycliste/"],["La gamme hiver","https://www.veracycling.fr/gamme-hiver-en-merinos-chaleur-confort-et-performance-velo/"]],ok:true,v:"D'après ta consigne."},
+{d:18,k:"Outil",t:"Combien coûte la mobilité dans ta structure ?",b:["Fais le calcul pour y voir plus clair et rouler mieux. Connaître le vrai coût des déplacements, c'est te donner des marges de manœuvre.","Et peut-être de quoi mettre quelque chose sous le sapin, sans te serrer la ceinture."],l:[["Faire le calcul","https://tally.so/r/xXAMMv"]],ok:true,v:"D'après ta consigne."},
+{d:19,k:"Action",t:"Inscris tes collaborateurs à un défi à vélo",b:["Un objectif commun, des entraînements ensemble, une belle fierté à l'arrivée.","Choisis ton défi : sur route, sur pavés ou sur gravel."],l:[["Lille-Hardelot","https://lille-hardelot.com/"],["Paris-Roubaix Challenge","https://www.parisroubaixchallenge.com/fr"],["Gravel is mine","https://gravelismine.cc/"],["Tour des Flandres","https://www.rondevanvlaanderen.be/fr/nouvelles/faites-votre-propre-tour-des-flandres-en-2026"]],ok:false,v:"Sites non consultés, aucune date indiquée. Le lien du Tour des Flandres concerne l'édition 2026 : à mettre à jour pour 2027."},
+{d:20,k:"Action",t:"Une rando-vélo pour se mettre en selle",b:["Propose à tes collaborateurs un week-end à vélo, accessible et dépaysant, au départ de Lille en TER.","En gravel de Cassel à Montreuil-sur-Mer, ou en famille jusqu'à Ypres en suivant les points-nœuds."],l:[["Cassel → Montreuil-sur-Mer","https://2raventure.com/2026/05/14/weekend-gravel-au-depart-de-lille-cassel-%e2%86%92-montreuil-sur-mer-2r-aventure/"],["Lille → Ypres en famille","https://2raventure.com/2026/05/14/5941/"]],ok:true,v:"Repris de tes deux articles."},
+{d:21,k:"Action",t:"Une offre mobilité pour les familles",b:["Propose à ton CSE de mettre en place une offre complète de mobilité durable pour les familles.","Une belle façon de prolonger l'engagement de l'entreprise jusqu'à la maison."],l:[["Voir la proposition","https://drive.google.com/file/d/16Z28Cc6-1JScbS9S-uexzrtab0E3zdsv/view"]],ok:false,v:"PDF Drive inaccessible de mon côté : texte général. Vérifie aussi que le fichier est partagé en lecture publique."},
+{d:22,k:"Action",t:"Construis un lieu démonstrateur",b:["Engage-toi pour construire un lieu qui soit un démonstrateur de mobilité et de transition… et aussi un endroit très cool.","Un projet collectif à rejoindre dès maintenant."],l:[["Découvrir le projet","https://www.linkedin.com/feed/update/urn:li:ugcPost:7524121761798488065/"]],ok:false,v:"Post LinkedIn inaccessible de mon côté : je n'ai pas nommé le lieu. Ajoute son nom et une phrase concrète."},
+{d:23,k:"Produit",t:"Une bière engagée et bien nommée",b:["Pour trinquer avant Noël : la Biclou des Moulins d'Ascq. La brasserie peut aussi personnaliser les étiquettes à tes couleurs.","Et pour les cyclistes, sa sélection de bières sans alcool est parfaite : testée et approuvée !"],l:[["Découvrir la Biclou","https://www.moulinsdascq.fr/biclou/"]],ok:true,v:"D'après ta consigne."},
+{d:24,k:"Cadeau",t:"L'histoire d'un Père Noël sans traîneau",b:["Pour le soir du réveillon, une histoire à partager avec tes équipes et leurs enfants.","Joyeuses fêtes, et belle route en 2027 !"],l:[["Lire l'histoire","https://drive.google.com/file/d/1_a-EkWzuZvWRzqXlSHvnh8R60vtRcCuf/view?usp=sharing"]],ok:false,v:"PDF Drive inaccessible de mon côté : texte général, sans résumé de l'histoire. Vérifie que le fichier est partagé en lecture publique."}
+];
+const ORDER=[17,4,11,23,1,14,8,20,6,19,2,13,24,9,16,5,21,12,3,18,10,22,7,15];
+const BIG={24:"w2 h2",6:"w2",1:"h2",12:"w2",17:"h2",9:"w2"};
+const MON=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const KEY="avent-2r-ouvertes";
+const preview=()=>location.hash==="#apercu";
+if(SIM){document.querySelector(".preview").textContent="Simulation : nous sommes le 25 décembre, toutes les cases sont prêtes à être ouvertes.";document.documentElement.classList.add("is-preview");}
+let opened=[];
+try{opened=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){opened=[]}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(opened))}catch(e){}};
+const unlockAt=d=>new Date(YEAR,11,d,0,0,0);
+const isReady=d=>preview()||NOW()>=unlockAt(d).getTime();
+const wheel='<svg class="wheel" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="50" cy="50" r="6" fill="currentColor"/>'+Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return `<line x1="50" y1="50" x2="${50+44*Math.cos(a)}" y2="${50+44*Math.sin(a)}" stroke="currentColor" stroke-width="1.6"/>`}).join('')+'</svg>';
+const lock='<svg class="lock" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="8" rx="1.5" fill="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+const grid=document.getElementById("grid");
+const byDay=d=>D.find(x=>x.d===d);
+function render(){
+  document.documentElement.classList.toggle("is-preview",preview()||!!SIM);
+  grid.innerHTML=ORDER.map((d,i)=>{
+    const it=byDay(d),ready=isReady(d),op=ready&&opened.includes(d);
+    const meta=ready?(op?"Ouverte":"À ouvrir !"):lock+` Le ${d} déc.`;
+    return `<div class="cell ${BIG[d]||""} ${op?"opened":""}" data-d="${d}">
+      <div class="inside"><span class="k">${it.k}</span><span class="t">${it.t}</span><button type="button" data-re="${d}">Relire</button></div>
+      <button type="button" class="door c${i%3} ${ready?"ready":"locked"}" data-d="${d}" aria-label="Case du ${d} décembre${ready?"":", verrouillée"}" ${op?'tabindex="-1" aria-hidden="true"':""}>${wheel}<span class="n">${d}</span><span class="meta">${meta}</span></button>
+    </div>`}).join("");
+  status();
+}
+function status(){
+  const s=document.getElementById("status"),now=new Date(NOW());
+  const avail=D.filter(x=>isReady(x.d)).length,done=opened.filter(isReady).length;
+  if(!preview()&&now<unlockAt(1)){
+    const days=Math.ceil((unlockAt(1)-now)/864e5);
+    s.innerHTML=`Première case dans <b>${days} jour${days>1?"s":""}</b>`;
+  }else s.innerHTML=`<b>${done}</b> / ${avail} case${avail>1?"s":""} ouverte${done>1?"s":""}`;
+}
+const ov=document.getElementById("ov");
+let lastFocus=null;
+function show(d){
+  const it=byDay(d);
+  document.getElementById("pd").textContent=`${d} décembre`;
+  document.getElementById("pk").textContent=it.k;
+  document.getElementById("pt").textContent=it.t;
+  document.getElementById("pb").innerHTML=it.b.map(p=>`<p>${p}</p>`).join("");
+  document.getElementById("pl").innerHTML=it.l.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t} →</a>`).join("");
+  lastFocus=document.activeElement;
+  ov.classList.add("on");
+  document.getElementById("cl").focus();
+}
+function hide(){ov.classList.remove("on");if(lastFocus&&document.contains(lastFocus))lastFocus.focus()}
+let tt;
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),2600)}
+grid.addEventListener("click",e=>{
+  const re=e.target.closest("[data-re]");
+  if(re){show(+re.dataset.re);return}
+  const door=e.target.closest(".door");if(!door)return;
+  const d=+door.dataset.d;
+  if(!isReady(d)){
+    door.classList.remove("shake");void door.offsetWidth;door.classList.add("shake");
+    const left=Math.ceil((unlockAt(d)-NOW())/864e5);
+    toast(`Patience ! Cette case s'ouvre le ${d} ${MON[11]}${left>0?` (dans ${left} jour${left>1?"s":""})`:""}.`);
+    return;
+  }
+  if(!opened.includes(d)){opened.push(d);save()}
+  door.closest(".cell").classList.add("opened");
+  door.setAttribute("tabindex","-1");door.setAttribute("aria-hidden","true");
+  door.querySelector(".meta").textContent="Ouverte";
+  status();
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(()=>show(d),reduce?0:520);
+});
+document.getElementById("cl").addEventListener("click",hide);
+ov.addEventListener("click",e=>{if(e.target===ov)hide()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&ov.classList.contains("on"))hide()});
+document.getElementById("reset").addEventListener("click",()=>{opened=[];save();render();toast("Toutes les cases sont refermées.")});
+function renderVerif(){
+  document.querySelector("h1").textContent="Version de vérification : les 24 cases ouvertes";
+  document.querySelector(".sub").textContent="Toutes les cases, dans l'ordre des jours, avec pour chacune ce qui est sourcé et ce qui reste à vérifier. Cette page n'est pas destinée à être partagée.";
+  const ko=D.filter(x=>!x.ok).length;
+  document.getElementById("status").innerHTML=`<b>${ko}</b> case${ko>1?"s":""} à vérifier`;
+  document.querySelector("footer").style.display="none";
+  grid.className="";
+  grid.innerHTML=`<div class="legend"><span style="background:#fbe3a6">À vérifier : page non lue ou formule de ma part</span><span style="background:#d7e9e3">Sourcé : repris de ta consigne ou de la page</span></div><div class="vlist">`+D.map(it=>`<article class="vcard">
+    <div><span class="day">${it.d} décembre</span><span class="kind">${it.k}</span></div>
+    <h2>${it.t}</h2>${it.b.map(p=>`<p>${p}</p>`).join("")}
+    ${it.l.length?`<div class="links">${it.l.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t} →</a>`).join("")}</div>${it.l.map(([t,u])=>`<span class="url">${t} : ${u}</span>`).join("")}`:""}
+    <div class="note ${it.ok?"okk":"ko"}"><b>${it.ok?"Sourcé":"À vérifier"}</b>${it.v}</div>
+  </article>`).join("")+`</div>`;
+}
+if(VERIF)renderVerif();else{window.addEventListener("hashchange",render);render();}
+}
+</script>
+</body>
+</html>
